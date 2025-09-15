@@ -1,14 +1,27 @@
-package com.example.b;
+package com.example.a;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 
 @RestController
-public class GreetController {
+public class HelloController {
 
-    @GetMapping("/api/greet")
-    public String greet(@RequestParam(defaultValue = "world") String name) {
-        return "Hello, " + name + " from service-b!";
+    private final RestClient rest;
+    private final String downstream;
+
+    public HelloController(RestClient rest,
+                           @Value("${downstream.baseUrl:http://service-b:8080}") String downstream) {
+        this.rest = rest;
+        this.downstream = downstream;
+    }
+
+    @GetMapping("/api/hello")
+    public String hello(@RequestParam(defaultValue = "world") String name) {
+        String msg = rest.get()
+                .uri(downstream + "/api/greet?name={name}", name)
+                .retrieve()
+                .body(String.class);
+        return "service-a → " + msg;
     }
 }
