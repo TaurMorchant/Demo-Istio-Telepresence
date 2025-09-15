@@ -1,0 +1,9 @@
+server:
+  port: 8080
+downstream:
+  baseUrl: http://service-b:8080   # по умолчанию — Kubernetes DNS имя
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

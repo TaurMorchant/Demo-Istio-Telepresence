@@ -1,0 +1,14 @@
+image:
+  repository: service-a
+  tag: "0.0.1"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+service:
+  port: 8080
+
+env:
+  DOWNSTREAM_BASE_URL: "http://service-b:8080"
+
+resources: {}
